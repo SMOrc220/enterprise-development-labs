@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using BookStore.Domain.Model;
-using BookStore.Domain.Services.InMemory;
-using BookStore.Domain.Data;
+using AirlineBooking.Domain.Model;
+using AirlineBooking.Domain.Services.InMemory;
+using AirlineBooking.Domain.Data;
 
-namespace BookStore.Domain.Tests;
+namespace AirlineBooking.Domain.Tests;
 
 /// <summary>
 /// Класс с юнит-тестами

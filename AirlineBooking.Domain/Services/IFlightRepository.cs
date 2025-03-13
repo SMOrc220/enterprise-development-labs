@@ -1,6 +1,6 @@
-﻿using BookStore.Domain.Model;
+﻿using AirlineBooking.Domain.Model;
 
-namespace BookStore.Domain.Services;
+namespace AirlineBooking.Domain.Services;
 
 /// <summary>
 /// Интерфейс репозитория для работы с рейсами.
