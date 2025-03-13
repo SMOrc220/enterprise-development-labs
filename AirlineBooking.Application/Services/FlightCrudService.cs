@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using BookStore.Application.Contracts.Flight;
-using BookStore.Application.Contracts;
-using BookStore.Domain.Model;
-using BookStore.Domain.Services;
+using AirlineBooking.Application.Contracts.Flight;
+using AirlineBooking.Application.Contracts;
+using AirlineBooking.Domain.Model;
+using AirlineBooking.Domain.Services;
 
-namespace BookStore.Application.Services;
+namespace AirlineBooking.Application.Services;
 
 /// <summary>
 /// Служба слоя приложения для манипуляции над рейсами

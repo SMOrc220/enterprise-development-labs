@@ -1,4 +1,4 @@
-﻿namespace BookStore.Domain.Model;
+﻿namespace AirlineBooking.Domain.Model;
 
 /// <summary>
 /// Класс, представляющий рейс.

@@ -1,4 +1,4 @@
-﻿namespace BookStore.Application.Contracts;
+﻿namespace AirlineBooking.Application.Contracts;
 
 /// <summary>
 /// Интерфейс для службы, выполняющей аналитические запросы согласно бизнес-логике приложения

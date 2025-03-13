@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using BookStore.Domain.Model;
-using BookStore.Domain.Services.InMemory;
-using BookStore.Domain.Data;
+using AirlineBooking.Domain.Model;
+using AirlineBooking.Domain.Services.InMemory;
+using AirlineBooking.Domain.Data;
 
-namespace BookStore.Domain.Tests;
+namespace AirlineBooking.Domain.Tests;
 
 /// <summary>
 /// Класс с юнит-тестами
@@ -19,7 +19,7 @@ public class FlightTests
     {
         _repository = new FlightInMemoryRepository();
     }
-    
+
     /// <summary>
     /// Тест метода, возвращающего информацию о всех рейсах
     /// </summary>
@@ -37,7 +37,7 @@ public class FlightTests
             Assert.Contains(expectedInfo, result);
         }
     }
-    
+
     /// <summary>
     /// Параметризованный тест метода, возвращающего список пассажиров по ID рейса
     /// </summary>
@@ -79,7 +79,7 @@ public class FlightTests
         Assert.NotNull(result);
         Assert.Empty(result);
     }
-    
+
     /// <summary>
     /// Параметризованный тест метода, возвращающего рейсы по городу вылета и дате
     /// </summary>
@@ -125,7 +125,7 @@ public class FlightTests
         Assert.NotNull(result);
         Assert.Empty(result);
     }
-    
+
     /// <summary>
     /// Тест метода, возвращающего топ-5 рейсов по количеству бронирований
     /// </summary>
@@ -148,7 +148,7 @@ public class FlightTests
             Assert.Contains(expectedTuple, result);
         }
     }
-    
+
     /// <summary>
     /// Тест метода, возвращающего рейсы с максимальным количеством бронирований
     /// </summary>
@@ -156,7 +156,7 @@ public class FlightTests
     public void GetFlightsWithMaxBookings_ReturnsFlightsWithMaxBookings()
     {
         var result = _repository.GetFlightsWithMaxBookings();
-        
+
         Assert.NotNull(result);
         Assert.NotEmpty(result);
 
@@ -175,7 +175,7 @@ public class FlightTests
             Assert.Contains(expectedInfo, result);
         }
     }
-    
+
     /// <summary>
     /// Параметризованный тест метода, возвращающего статистику бронирований по городу вылета
     /// </summary>
@@ -186,7 +186,7 @@ public class FlightTests
     public void GetBookingStatisticsByCity_ReturnsCorrectStatistics(string departureCity)
     {
         var result = _repository.GetBookingStatisticsByCity(departureCity);
-        
+
         var bookingsCount = DataSeeder.Flights
             .Where(f => f.DepartureCity == departureCity && f.Bookings != null)
             .Select(f => f.BookingCount)

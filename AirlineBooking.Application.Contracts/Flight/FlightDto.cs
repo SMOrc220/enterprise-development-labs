@@ -1,4 +1,4 @@
-﻿namespace BookStore.Application.Contracts.Flight;
+﻿namespace AirlineBooking.Application.Contracts.Flight;
 
 /// <summary>
 /// Dto для просмотра сведений о рейсе

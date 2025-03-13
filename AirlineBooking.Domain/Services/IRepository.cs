@@ -1,4 +1,4 @@
-﻿namespace BookStore.Domain.Services;
+﻿namespace AirlineBooking.Domain.Services;
 
 /// <summary>
 /// Интерфейс репозитория для работы с сущностями.

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using BookStore.Domain.Model;
+using AirlineBooking.Domain.Model;
 
-namespace BookStore.Domain.Data;
+namespace AirlineBooking.Domain.Data;
 
 /// <summary>
 /// Класс для заполнения коллекций данными.

@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>bin\$(Configuration)\net8.0\$(AssemblyName).xml</DocumentationFile>
+    <RootNamespace>AirlineBooking.Server</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BookStore.Application\BookStore.Application.csproj" />
+    <ProjectReference Include="..\AirlineBooking.Application\AirlineBooking.Application.csproj" />
   </ItemGroup>
 
 </Project>

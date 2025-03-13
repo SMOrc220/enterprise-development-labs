@@ -1,4 +1,4 @@
-﻿namespace BookStore.Application.Contracts.Booking;
+﻿namespace AirlineBooking.Application.Contracts.Booking;
 
 /// <summary>
 /// Dto для просмотра сведений о бронировании

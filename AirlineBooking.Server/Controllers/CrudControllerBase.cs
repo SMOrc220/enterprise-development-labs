@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using BookStore.Application.Contracts;
+using AirlineBooking.Application.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookStore.Server.Controllers;
+namespace AirlineBooking.Server.Controllers;
 
 /// <summary>
 /// Базовый контроллер для CRUD-операций над сущностями в системе бронирования авиабилетов.

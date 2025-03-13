@@ -1,4 +1,4 @@
-﻿namespace BookStore.Application.Contracts;
+﻿namespace AirlineBooking.Application.Contracts;
 
 /// <summary>
 /// Интерфейс для примитивной CRUD-службы в системе бронирования авиабилетов

@@ -1,7 +1,7 @@
-﻿using BookStore.Domain.Data;
-using BookStore.Domain.Model;
+﻿using AirlineBooking.Domain.Data;
+using AirlineBooking.Domain.Model;
 
-namespace BookStore.Domain.Services.InMemory;
+namespace AirlineBooking.Domain.Services.InMemory;
 
 /// <summary>
 /// Реализация репозитория клиентов в памяти.

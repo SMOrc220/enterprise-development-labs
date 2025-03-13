@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>AirlineBooking.Application</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BookStore.Application.Contracts\BookStore.Application.Contracts.csproj" />
-      <ProjectReference Include="..\BookStore.Domain\BookStore.Domain.csproj" />
+      <ProjectReference Include="..\AirlineBooking.Application.Contracts\AirlineBooking.Application.Contracts.csproj" />
+      <ProjectReference Include="..\AirlineBooking.Domain\AirlineBooking.Domain.csproj" />
     </ItemGroup>
 
 </Project>

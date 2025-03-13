@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using BookStore.Application.Contracts.Flight;
-using BookStore.Application.Contracts.Customer;
-using BookStore.Application.Contracts.Booking;
-using BookStore.Domain.Model;
+using AirlineBooking.Application.Contracts.Flight;
+using AirlineBooking.Application.Contracts.Customer;
+using AirlineBooking.Application.Contracts.Booking;
+using AirlineBooking.Domain.Model;
 
-namespace BookStore.Application;
+namespace AirlineBooking.Application;
 
 public class AutoMapperProfile : Profile
 {

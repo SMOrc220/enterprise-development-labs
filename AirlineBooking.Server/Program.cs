@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
 using AutoMapper;
-using BookStore.Application;
-using BookStore.Application.Contracts.Flight;
-using BookStore.Application.Contracts.Customer;
-using BookStore.Application.Contracts.Booking;
-using BookStore.Application.Services;
-using BookStore.Domain.Services;
-using BookStore.Domain.Model;
-using BookStore.Domain.Services.InMemory;
+using AirlineBooking.Application;
+using AirlineBooking.Application.Contracts.Flight;
+using AirlineBooking.Application.Contracts.Customer;
+using AirlineBooking.Application.Contracts.Booking;
+using AirlineBooking.Application.Services;
+using AirlineBooking.Domain.Services;
+using AirlineBooking.Domain.Model;
+using AirlineBooking.Domain.Services.InMemory;
 using System.Reflection;
-using BookStore.Application.Contracts;
+using AirlineBooking.Application.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,7 +45,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookStore API V1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AirlineBooking API V1"));
 }
 
 app.UseAuthorization();

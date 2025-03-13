@@ -1,4 +1,4 @@
-﻿namespace BookStore.Application.Contracts.Customer;
+﻿namespace AirlineBooking.Application.Contracts.Customer;
 
 /// <summary>
 /// Dto для создания или изменения клиента

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using BookStore.Application.Contracts;
+using AirlineBooking.Application.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookStore.Server.Controllers;
+namespace AirlineBooking.Server.Controllers;
 
 /// <summary>
 /// Контроллер для выполнения аналитических запросов по рейсам

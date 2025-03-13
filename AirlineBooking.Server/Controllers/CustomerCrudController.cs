@@ -1,7 +1,7 @@
-﻿using BookStore.Application.Contracts;
-using BookStore.Application.Contracts.Customer;
+﻿using AirlineBooking.Application.Contracts;
+using AirlineBooking.Application.Contracts.Customer;
 
-namespace BookStore.Server.Controllers;
+namespace AirlineBooking.Server.Controllers;
 
 /// <summary>
 /// Контроллер для CRUD-операций над клиентами
