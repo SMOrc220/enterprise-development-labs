@@ -23,7 +23,7 @@ public class CustomerInMemoryRepository : IRepository<Customer, int>
     /// </summary>
     /// <param name="entity">Клиент для добавления.</param>
     /// <returns>True, если добавление успешно; иначе false.</returns>
-    public bool Add(Customer entity)
+    public Task<Customer> Add(Customer entity)
     {
         try
         {
@@ -31,10 +31,9 @@ public class CustomerInMemoryRepository : IRepository<Customer, int>
         }
         catch
         {
-            return false;
+            return null!;
         }
-
-        return true;
+        return Task.FromResult(entity);
     }
 
     /// <summary>
@@ -42,11 +41,11 @@ public class CustomerInMemoryRepository : IRepository<Customer, int>
     /// </summary>
     /// <param name="key">ID клиента для удаления.</param>
     /// <returns>True, если удаление успешно; иначе false.</returns>
-    public bool Delete(int key)
+    public async Task<bool> Delete(int key)
     {
         try
         {
-            var customer = Get(key);
+            var customer = await Get(key);
             if (customer != null)
                 _customers.Remove(customer);
         }
@@ -54,7 +53,6 @@ public class CustomerInMemoryRepository : IRepository<Customer, int>
         {
             return false;
         }
-
         return true;
     }
 
@@ -63,33 +61,32 @@ public class CustomerInMemoryRepository : IRepository<Customer, int>
     /// </summary>
     /// <param name="key">ID клиента.</param>
     /// <returns>Клиент или null, если клиент не найден.</returns>
-    public Customer? Get(int key) =>
-        _customers.FirstOrDefault(item => item.Id == key);
+    public Task<Customer?> Get(int key) =>
+        Task.FromResult(_customers.FirstOrDefault(item => item.Id == key));
 
     /// <summary>
     /// Возвращает всех клиентов из коллекции.
     /// </summary>
     /// <returns>Список всех клиентов.</returns>
-    public IList<Customer> GetAll() =>
-        _customers;
+    public Task<IList<Customer>> GetAll() =>
+        Task.FromResult((IList<Customer>)_customers);
 
     /// <summary>
     /// Обновляет информацию о клиенте в коллекции.
     /// </summary>
     /// <param name="entity">Обновленный клиент.</param>
     /// <returns>True, если обновление успешно; иначе false.</returns>
-    public bool Update(Customer entity)
+    public async Task<Customer> Update(Customer entity)
     {
         try
         {
-            Delete(entity.Id);
-            Add(entity);
+            await Delete(entity.Id);
+            await Add(entity);
         }
         catch
         {
-            return false;
+            return null!;
         }
-
-        return true;
+        return entity;
     }
 }

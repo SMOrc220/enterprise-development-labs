@@ -94,26 +94,4 @@ public static class DataSeeder
         new() { Id = 6, FlightId = 3, CustomerId = 2, TicketNumber = "TICKET131" },
         new() { Id = 7, FlightId = 4, CustomerId = 4, TicketNumber = "TICKET141" }
     ];
-
-    /// <summary>
-    /// Статический конструктор.
-    /// </summary>
-    static DataSeeder()
-    {
-        foreach (var booking in Bookings)
-        {
-            booking.Flight = Flights.FirstOrDefault(f => f.Id == booking.FlightId);
-            booking.Customer = Customers.FirstOrDefault(c => c.Id == booking.CustomerId);
-        }
-
-        foreach (var flight in Flights)
-        {
-            flight.Bookings = new List<Booking>(Bookings.Where(b => b.FlightId == flight.Id));
-        }
-
-        foreach (var customer in Customers)
-        {
-            customer.Bookings = new List<Booking>(Bookings.Where(b => b.CustomerId == customer.Id));
-        }
-    }
 }

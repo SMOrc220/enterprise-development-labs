@@ -19,8 +19,8 @@ public class FlightAnalyticsController(IFlightAnalyticsService service) : Contro
     /// <returns>Список кортежей (номер рейса, количество бронирований)</returns>
     [HttpGet("Top5Flights")]
     [ProducesResponseType(200)]
-    public ActionResult<List<Tuple<string, int?>>> GetTop5Flights() =>
-        Ok(service.GetTop5FlightsByBookings());
+    public async Task<ActionResult<List<Tuple<string, int?>>>> GetTop5Flights() =>
+        Ok(await service.GetTop5FlightsByBookings());
 
     /// <summary>
     /// Получение рейсов с максимальным количеством бронирований
@@ -28,8 +28,8 @@ public class FlightAnalyticsController(IFlightAnalyticsService service) : Contro
     /// <returns>Список строк с информацией о рейсах и их бронированиях</returns>
     [HttpGet("MaxBookingsFlights")]
     [ProducesResponseType(200)]
-    public ActionResult<List<string>> GetFlightsWithMaxBookings() =>
-        Ok(service.GetFlightsWithMaxBookings());
+    public async Task<ActionResult<List<string>>> GetFlightsWithMaxBookings() =>
+        Ok(await service.GetFlightsWithMaxBookings());
 
     /// <summary>
     /// Получение статистики бронирований для рейсов, вылетающих из указанного города
@@ -38,6 +38,9 @@ public class FlightAnalyticsController(IFlightAnalyticsService service) : Contro
     /// <returns>Кортеж с минимальным, средним и максимальным количеством бронирований</returns>
     [HttpGet("BookingStatistics/{departureCity}")]
     [ProducesResponseType(200)]
-    public ActionResult<(int? Min, double? Average, int? Max)> GetBookingStatistics(string departureCity) =>
-        Ok(service.GetBookingStatisticsByCity(departureCity));
+    public async Task<ActionResult<(int? Min, double? Average, int? Max)>> GetBookingStatistics(string departureCity)
+    {
+        var statistics = await service.GetBookingStatisticsByCity(departureCity);
+        return Ok(statistics);
+    }
 }

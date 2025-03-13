@@ -28,7 +28,7 @@ public class Customer
     /// <summary>
     /// Список бронирований, связанных с клиентом.
     /// </summary>
-    public virtual List<Booking>? Bookings { get; set; } = [];
+    public virtual List<Booking>? Bookings { get; set; }
 
     /// <summary>
     /// Возвращает количество бронирований клиента.

@@ -17,47 +17,42 @@ public class CustomerCrudService(IRepository<Customer, int> repository, IMapper 
     /// <summary>
     /// Создание нового клиента
     /// </summary>
-    public bool Create(CustomerCreateUpdateDto newDto)
+    public async Task<CustomerDto> Create(CustomerCreateUpdateDto newDto)
     {
         var newCustomer = mapper.Map<Customer>(newDto);
-        newCustomer.Id = repository.GetAll().Max(x => x.Id) + 1;
-        var result = repository.Add(newCustomer);
-        return result;
+        newCustomer.Id = (await repository.GetAll()).Max(x => x.Id) + 1;
+        var res = await repository.Add(newCustomer);
+        return mapper.Map<CustomerDto>(res);
     }
 
     /// <summary>
     /// Удаление клиента
     /// </summary>
-    public bool Delete(int id) =>
-        repository.Delete(id);
+    public async Task<bool> Delete(int id) =>
+        await repository.Delete(id);
 
     /// <summary>
     /// Получение клиента по ID
     /// </summary>
-    public CustomerDto? GetById(int id)
+    public async Task<CustomerDto?> GetById(int id)
     {
-        var customer = repository.Get(id);
-        return mapper.Map<CustomerDto>(customer);
+        var customer = await repository.Get(id);
+        return customer != null ? mapper.Map<CustomerDto>(customer) : null;
     }
 
     /// <summary>
     /// Получение всех клиентов
     /// </summary>
-    public IList<CustomerDto> GetList() =>
-        mapper.Map<List<CustomerDto>>(repository.GetAll());
+    public async Task<IList<CustomerDto>> GetList() =>
+        mapper.Map<List<CustomerDto>>(await repository.GetAll());
 
     /// <summary>
     /// Обновление данных о клиенте
     /// </summary>
-    public bool Update(int key, CustomerCreateUpdateDto newDto)
+    public async Task<CustomerDto> Update(int key, CustomerCreateUpdateDto newDto)
     {
-        var oldCustomer = repository.Get(key);
-        if (oldCustomer == null) return false;
-
         var newCustomer = mapper.Map<Customer>(newDto);
-        newCustomer.Id = key;
-        newCustomer.Bookings = oldCustomer.Bookings; // Сохраняем существующие бронирования
-        var result = repository.Update(newCustomer);
-        return result;
+        await repository.Update(newCustomer);
+        return mapper.Map<CustomerDto>(newCustomer);
     }
 }

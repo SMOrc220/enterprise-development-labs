@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 using AirlineBooking.Domain.Model;
 using AirlineBooking.Domain.Services.InMemory;
@@ -24,9 +25,9 @@ public class FlightTests
     /// Тест метода, возвращающего информацию о всех рейсах
     /// </summary>
     [Fact]
-    public void GetAllFlightsInfo_ReturnsCorrectFlightDetails()
+    public async Task GetAllFlightsInfo_ReturnsCorrectFlightDetailsAsync()
     {
-        var result = _repository.GetAllFlightsInfo();
+        var result = await _repository.GetAllFlightsInfo();
         Assert.NotNull(result);
         Assert.Equal(DataSeeder.Flights.Count, result.Count);
 
@@ -46,9 +47,9 @@ public class FlightTests
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
-    public void GetCustomersByFlight_ReturnsCorrectCustomerDetails(int flightId)
+    public async Task GetCustomersByFlight_ReturnsCorrectCustomerDetailsAsync(int flightId)
     {
-        var result = _repository.GetCustomersByFlight(flightId);
+        var result = await _repository.GetCustomersByFlight(flightId);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -72,9 +73,9 @@ public class FlightTests
     /// <param name="flightId">ID рейса</param>
     [Theory]
     [InlineData(999)]
-    public void GetCustomersByFlight_ReturnsEmptyList_WhenNoBookingsExist(int flightId)
+    public async Task GetCustomersByFlight_ReturnsEmptyList_WhenNoBookingsExistAsync(int flightId)
     {
-        var result = _repository.GetCustomersByFlight(flightId);
+        var result = await _repository.GetCustomersByFlight(flightId);
 
         Assert.NotNull(result);
         Assert.Empty(result);
@@ -89,11 +90,11 @@ public class FlightTests
     [InlineData("Москва", "15.10.2023 10:00:00")]
     [InlineData("Санкт-Петербург", "15.10.2023 14:00:00")]
     [InlineData("Москва", "16.10.2023 8:00:00")]
-    public void GetFlightsByCityAndDate_ReturnsCorrectFlights(string departureCity, string dateString)
+    public async Task GetFlightsByCityAndDate_ReturnsCorrectFlightsAsync(string departureCity, string dateString)
     {
         var date = DateTime.ParseExact(dateString, "dd.MM.yyyy H:mm:ss", null);
 
-        var result = _repository.GetFlightsByCityAndDate(departureCity, date);
+        var result = await _repository.GetFlightsByCityAndDate(departureCity, date);
 
         Assert.NotEmpty(result);
 
@@ -116,11 +117,11 @@ public class FlightTests
     /// <param name="dateString">Дата вылета в строковом формате</param>
     [Theory]
     [InlineData("Лондон", "15.10.2023 10:00:00")]
-    public void GetFlightsByCityAndDate_ReturnsEmptyList_WhenNoFlightsExist(string departureCity, string dateString)
+    public async Task GetFlightsByCityAndDate_ReturnsEmptyList_WhenNoFlightsExistAsync(string departureCity, string dateString)
     {
         var date = DateTime.ParseExact(dateString, "dd.MM.yyyy H:mm:ss", null);
 
-        var result = _repository.GetFlightsByCityAndDate(departureCity, date);
+        var result = await _repository.GetFlightsByCityAndDate(departureCity, date);
 
         Assert.NotNull(result);
         Assert.Empty(result);
@@ -130,9 +131,9 @@ public class FlightTests
     /// Тест метода, возвращающего топ-5 рейсов по количеству бронирований
     /// </summary>
     [Fact]
-    public void GetTop5FlightsByBookings_ReturnsTop5Flights()
+    public async Task GetTop5FlightsByBookings_ReturnsTop5FlightsAsync()
     {
-        var result = _repository.GetTop5FlightsByBookings();
+        var result = await _repository.GetTop5FlightsByBookings();
         Assert.NotNull(result);
         Assert.True(result.Count <= 5);
 
@@ -153,9 +154,9 @@ public class FlightTests
     /// Тест метода, возвращающего рейсы с максимальным количеством бронирований
     /// </summary>
     [Fact]
-    public void GetFlightsWithMaxBookings_ReturnsFlightsWithMaxBookings()
+    public async Task GetFlightsWithMaxBookings_ReturnsFlightsWithMaxBookingsAsync()
     {
-        var result = _repository.GetFlightsWithMaxBookings();
+        var result = await _repository.GetFlightsWithMaxBookings();
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -183,9 +184,9 @@ public class FlightTests
     [Theory]
     [InlineData("Москва")]
     [InlineData("Санкт-Петербург")]
-    public void GetBookingStatisticsByCity_ReturnsCorrectStatistics(string departureCity)
+    public async Task GetBookingStatisticsByCity_ReturnsCorrectStatisticsAsync(string departureCity)
     {
-        var result = _repository.GetBookingStatisticsByCity(departureCity);
+        var result = await _repository.GetBookingStatisticsByCity(departureCity);
 
         var bookingsCount = DataSeeder.Flights
             .Where(f => f.DepartureCity == departureCity && f.Bookings != null)

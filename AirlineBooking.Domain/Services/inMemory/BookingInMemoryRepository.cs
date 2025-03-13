@@ -23,7 +23,7 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
     /// </summary>
     /// <param name="entity">Бронирование для добавления.</param>
     /// <returns>True, если добавление успешно; иначе false.</returns>
-    public bool Add(Booking entity)
+    public Task<Booking> Add(Booking entity)
     {
         try
         {
@@ -31,10 +31,9 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
         }
         catch
         {
-            return false;
+            return null!;
         }
-
-        return true;
+        return Task.FromResult(entity);
     }
 
     /// <summary>
@@ -42,11 +41,11 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
     /// </summary>
     /// <param name="key">ID бронирования для удаления.</param>
     /// <returns>True, если удаление успешно; иначе false.</returns>
-    public bool Delete(int key)
+    public async Task<bool> Delete(int key)
     {
         try
         {
-            var booking = Get(key);
+            var booking = await Get(key);
             if (booking != null)
                 _bookings.Remove(booking);
         }
@@ -54,7 +53,6 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
         {
             return false;
         }
-
         return true;
     }
 
@@ -63,33 +61,32 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
     /// </summary>
     /// <param name="key">ID бронирования.</param>
     /// <returns>Бронирование или null, если бронирование не найдено.</returns>
-    public Booking? Get(int key) =>
-        _bookings.FirstOrDefault(item => item.Id == key);
+    public Task<Booking?> Get(int key) =>
+        Task.FromResult(_bookings.FirstOrDefault(item => item.Id == key));
 
     /// <summary>
     /// Возвращает все бронирования из коллекции.
     /// </summary>
     /// <returns>Список всех бронирований.</returns>
-    public IList<Booking> GetAll() =>
-        _bookings;
+    public Task<IList<Booking>> GetAll() =>
+        Task.FromResult((IList<Booking>)_bookings);
 
     /// <summary>
     /// Обновляет информацию о бронировании в коллекции.
     /// </summary>
     /// <param name="entity">Обновленное бронирование.</param>
     /// <returns>True, если обновление успешно; иначе false.</returns>
-    public bool Update(Booking entity)
+    public async Task<Booking> Update(Booking entity)
     {
         try
         {
-            Delete(entity.Id);
-            Add(entity);
+            await Delete(entity.Id);
+            await Add(entity);
         }
         catch
         {
-            return false;
+            return null!;
         }
-
-        return true;
+        return entity;
     }
 }

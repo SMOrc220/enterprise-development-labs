@@ -43,7 +43,7 @@ public class Flight
     /// <summary>
     /// Список бронирований, связанных с рейсом.
     /// </summary>
-    public virtual List<Booking>? Bookings { get; set; } = [];
+    public virtual List<Booking>? Bookings { get; set; }
 
     /// <summary>
     /// Возвращает количество бронирований для рейса.
