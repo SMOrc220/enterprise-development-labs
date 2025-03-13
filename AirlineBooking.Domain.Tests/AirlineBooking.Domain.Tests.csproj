@@ -7,6 +7,7 @@
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <RootNamespace>BookStore.Domain.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BookStore.Domain\BookStore.Domain.csproj" />
+      <ProjectReference Include="..\AirlineBooking.Domain\AirlineBooking.Domain.csproj" />
     </ItemGroup>
 
 </Project>
