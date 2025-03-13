@@ -91,7 +91,7 @@ public class FlightTests
     [InlineData("Москва", "16.10.2023 8:00:00")]
     public void GetFlightsByCityAndDate_ReturnsCorrectFlights(string departureCity, string dateString)
     {
-        DateTime date = DateTime.Parse(dateString);
+        var date = DateTime.ParseExact(dateString, "dd.MM.yyyy H:mm:ss", null);
 
         var result = _repository.GetFlightsByCityAndDate(departureCity, date);
 
@@ -118,7 +118,7 @@ public class FlightTests
     [InlineData("Лондон", "15.10.2023 10:00:00")]
     public void GetFlightsByCityAndDate_ReturnsEmptyList_WhenNoFlightsExist(string departureCity, string dateString)
     {
-        DateTime date = DateTime.Parse(dateString);
+        var date = DateTime.ParseExact(dateString, "dd.MM.yyyy H:mm:ss", null);
 
         var result = _repository.GetFlightsByCityAndDate(departureCity, date);
 
@@ -186,9 +186,7 @@ public class FlightTests
     public void GetBookingStatisticsByCity_ReturnsCorrectStatistics(string departureCity)
     {
         var result = _repository.GetBookingStatisticsByCity(departureCity);
-
-        Assert.NotNull(result);
-
+        
         var bookingsCount = DataSeeder.Flights
             .Where(f => f.DepartureCity == departureCity && f.Bookings != null)
             .Select(f => f.BookingCount)
