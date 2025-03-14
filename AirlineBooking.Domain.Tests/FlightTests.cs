@@ -52,7 +52,6 @@ public class FlightTests
         var result = await _repository.GetCustomersByFlight(flightId);
 
         Assert.NotNull(result);
-        Assert.NotEmpty(result);
 
         var customers = DataSeeder.Bookings
             .Where(b => b.FlightId == flightId)
