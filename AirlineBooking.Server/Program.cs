@@ -7,21 +7,23 @@ using AirlineBooking.Application.Services;
 using AirlineBooking.Domain.Services;
 using AirlineBooking.Domain.Model;
 using AirlineBooking.Domain.Services.InMemory;
-using System.Reflection;
 using AirlineBooking.Application.Contracts;
-using AirlineBooking.Infrastructur.EfCores.Services;
+using AirlineBooking.Infrastructure.EfCore;
+using AirlineBooking.Infrastructure.EfCore.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(CustomerDto).Assembly.GetName().Name}.xml"));
-});
+builder.Services.AddSwaggerGen();
 
+var connectionString = builder.Configuration.GetConnectionString("MySql");
+builder.Services.AddDbContext<AirlineBookingDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+);
 var mapperConfig = new MapperConfiguration(config => config.AddProfile(new AutoMapperProfile()));
+
 IMapper? mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
@@ -38,11 +40,11 @@ builder.Services.AddSingleton<IFlightRepository, FlightInMemoryRepository>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("default", policy =>
     {
-        policy.WithOrigins("http://localhost:5244");
-        policy.AllowAnyMethod();
-        policy.AllowAnyHeader();
+        policy.WithOrigins("http://localhost:5244")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -55,7 +57,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-app.UseCors();
+app.UseCors("default");
 app.MapControllers();
 
 app.Run();

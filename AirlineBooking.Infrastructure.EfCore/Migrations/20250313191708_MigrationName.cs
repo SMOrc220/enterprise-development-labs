@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -7,34 +8,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AirlineBooking.Infrastructure.EfCore.Migrations
 {
-    public partial class Tutorial : Migration
+    /// <inheritdoc />
+    public partial class MigrationName : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Flights",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FlightNumber = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DepartureCity = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ArrivalCity = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DepartureDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ArrivalDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    AircraftType = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Flights", x => x.Id);
-                })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -43,15 +23,38 @@ namespace AirlineBooking.Infrastructure.EfCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FullName = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Passport = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    BirthDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    FullName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BirthDate = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Customers", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Flights",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    FlightNumber = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DepartureCity = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ArrivalCity = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AircraftType = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DepartureDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    ArrivalDate = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Flights", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -61,8 +64,10 @@ namespace AirlineBooking.Infrastructure.EfCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    FlightId = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    FlightId = table.Column<int>(type: "int", nullable: false)
+                    TicketNumber = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -83,30 +88,36 @@ namespace AirlineBooking.Infrastructure.EfCore.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
-                table: "Flights",
-                columns: new[] { "Id", "FlightNumber", "DepartureCity", "ArrivalCity", "DepartureDate", "ArrivalDate", "AircraftType" },
+                table: "Customers",
+                columns: new[] { "Id", "BirthDate", "FullName", "Passport" },
                 values: new object[,]
                 {
-                    { 1, "SU123", "Москва", "Санкт-Петербург", new DateTime(2025, 3, 1, 12, 0, 0, 0), new DateTime(2025, 3, 1, 14, 30, 0, 0), "Boeing 737" },
-                    { 2, "AF456", "Париж", "Лондон", new DateTime(2025, 3, 2, 16, 0, 0, 0), new DateTime(2025, 3, 2, 18, 45, 0, 0), "Airbus A320" }
+                    { 1, new DateTime(1990, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Иванов Иван Иванович", "1234567890" },
+                    { 2, new DateTime(1985, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Петров Петр Петрович", "0987654321" },
+                    { 3, new DateTime(1995, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Сидорова Анна Сергеевна", "1122334455" },
+                    { 4, new DateTime(1980, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Кузнецов Дмитрий Александрович", "2233445566" }
                 });
 
             migrationBuilder.InsertData(
-                table: "Customers",
-                columns: new[] { "Id", "FullName", "Passport", "BirthDate" },
+                table: "Flights",
+                columns: new[] { "Id", "AircraftType", "ArrivalCity", "ArrivalDate", "DepartureCity", "DepartureDate", "FlightNumber" },
                 values: new object[,]
                 {
-                    { 1, "Иван Иванов", "AB1234567", new DateTime(1990, 5, 15) },
-                    { 2, "Мария Петрова", "CD9876543", new DateTime(1985, 8, 20) }
+                    { 1, "Boeing 737", "Санкт-Петербург", new DateTime(2023, 10, 15, 12, 0, 0, 0, DateTimeKind.Unspecified), "Москва", new DateTime(2023, 10, 15, 10, 0, 0, 0, DateTimeKind.Unspecified), "SU123" },
+                    { 2, "Airbus A320", "Москва", new DateTime(2023, 10, 15, 16, 0, 0, 0, DateTimeKind.Unspecified), "Санкт-Петербург", new DateTime(2023, 10, 15, 14, 0, 0, 0, DateTimeKind.Unspecified), "SU456" },
+                    { 3, "Boeing 777", "Сочи", new DateTime(2023, 10, 16, 11, 0, 0, 0, DateTimeKind.Unspecified), "Москва", new DateTime(2023, 10, 16, 8, 0, 0, 0, DateTimeKind.Unspecified), "SU789" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Bookings",
-                columns: new[] { "Id", "CustomerId", "FlightId" },
+                columns: new[] { "Id", "CustomerId", "FlightId", "TicketNumber" },
                 values: new object[,]
                 {
-                    { 1, 1, 1 },
-                    { 2, 2, 2 }
+                    { 1, 1, 1, "TICKET123" },
+                    { 2, 1, 1, "TICKET456" },
+                    { 3, 1, 2, "TICKET789" },
+                    { 4, 3, 2, "TICKET101" },
+                    { 5, 3, 2, "TICKET112" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -120,16 +131,17 @@ namespace AirlineBooking.Infrastructure.EfCore.Migrations
                 column: "FlightId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "Flights");
+                name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Flights");
         }
     }
 }

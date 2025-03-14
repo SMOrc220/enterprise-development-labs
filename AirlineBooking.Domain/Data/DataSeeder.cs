@@ -90,8 +90,6 @@ public static class DataSeeder
         new() { Id = 2, FlightId = 1, CustomerId = 1, TicketNumber = "TICKET456" },
         new() { Id = 3, FlightId = 2, CustomerId = 1, TicketNumber = "TICKET789" },
         new() { Id = 4, FlightId = 2, CustomerId = 3, TicketNumber = "TICKET101" },
-        new() { Id = 5, FlightId = 2, CustomerId = 3, TicketNumber = "TICKET112" },
-        new() { Id = 6, FlightId = 3, CustomerId = 2, TicketNumber = "TICKET131" },
-        new() { Id = 7, FlightId = 4, CustomerId = 4, TicketNumber = "TICKET141" }
+        new() { Id = 5, FlightId = 2, CustomerId = 3, TicketNumber = "TICKET112" }
     ];
 }

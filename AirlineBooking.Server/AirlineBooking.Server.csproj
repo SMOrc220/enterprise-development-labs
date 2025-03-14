@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AirlineBooking.Application\AirlineBooking.Application.csproj" />
-    <ProjectReference Include="..\AirlineBooking.Infractructure.EfCore\AirlineBooking.Infractructure.EfCore.csproj" />
+    <ProjectReference Include="..\AirlineBooking.Infrastructure.EfCore\AirlineBooking.Infrastructure.EfCore.csproj" />
   </ItemGroup>
 
 </Project>

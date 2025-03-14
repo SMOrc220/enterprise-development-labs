@@ -16,4 +16,8 @@
       <ProjectReference Include="..\AirlineBooking.Domain\AirlineBooking.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>
