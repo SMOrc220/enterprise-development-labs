@@ -1,13 +1,13 @@
-﻿using AutoMapper;
+﻿using AirlineBooking.Application.Contracts;
 using AirlineBooking.Application.Contracts.Flight;
-using AirlineBooking.Application.Contracts;
 using AirlineBooking.Domain.Model;
 using AirlineBooking.Domain.Services;
+using AutoMapper;
 
 namespace AirlineBooking.Application.Services;
 
 /// <summary>
-/// Служба слоя приложения для манипуляции над рейсами
+///     Служба слоя приложения для манипуляции над рейсами
 /// </summary>
 /// <param name="repository">Доменная служба для рейсов</param>
 /// <param name="mapper">Автомаппер</param>
@@ -15,52 +15,56 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
     : ICrudService<FlightDto, FlightCreateUpdateDto, int>, IFlightAnalyticsService
 {
     /// <summary>
-    /// Создание нового рейса
+    ///     Создание нового рейса
     /// </summary>
     public async Task<FlightDto> Create(FlightCreateUpdateDto newDto)
     {
-        var newFlight = mapper.Map<Flight>(newDto);
-        var res = await repository.Add(newFlight);
+        Flight? newFlight = mapper.Map<Flight>(newDto);
+        Flight res = await repository.Add(newFlight);
         return mapper.Map<FlightDto>(res);
     }
 
     /// <summary>
-    /// Удаление рейса
+    ///     Удаление рейса
     /// </summary>
-    public async Task<bool> Delete(int id) =>
-        await repository.Delete(id);
+    public async Task<bool> Delete(int id)
+    {
+        return await repository.Delete(id);
+    }
 
     /// <summary>
-    /// Получение рейса по ID
+    ///     Получение рейса по ID
     /// </summary>
     public async Task<FlightDto?> GetById(int id)
     {
-        var flight = await repository.Get(id);
+        Flight? flight = await repository.Get(id);
         return mapper.Map<FlightDto>(flight);
     }
 
     /// <summary>
-    /// Получение всех рейсов
+    ///     Получение всех рейсов
     /// </summary>
-    public async Task<IList<FlightDto>> GetList() =>
-        mapper.Map<List<FlightDto>>(repository.GetAll());
+    public async Task<IList<FlightDto>> GetList()
+    {
+        return mapper.Map<List<FlightDto>>(await repository.GetAll());
+    }
 
     /// <summary>
-    /// Обновление данных о рейсе
+    ///     Обновление данных о рейсе
     /// </summary>
     public async Task<FlightDto> Update(int key, FlightCreateUpdateDto newDto)
     {
-        var newFlight = mapper.Map<Flight>(newDto);
+        Flight? newFlight = mapper.Map<Flight>(newDto);
         await repository.Update(newFlight);
         return mapper.Map<FlightDto>(newFlight);
     }
 
     /// <summary>
-    /// Возвращает информацию о всех рейсах в виде списка строк.
+    ///     Возвращает информацию о всех рейсах в виде списка строк.
     /// </summary>
     public async Task<IList<string>> GetAllFlightsInfo()
     {
-        var flights = await repository.GetAll();
+        IList<Flight> flights = await repository.GetAll();
         return flights.Select(flight =>
                 $"Рейс: {flight.FlightNumber}, Откуда: {flight.DepartureCity}, Куда: {flight.ArrivalCity}, " +
                 $"Дата вылета: {flight.DepartureDate}, Дата прибытия: {flight.ArrivalDate}, Тип самолета: {flight.AircraftType}")
@@ -68,13 +72,15 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
     }
 
     /// <summary>
-    /// Возвращает список пассажиров для указанного рейса.
+    ///     Возвращает список пассажиров для указанного рейса.
     /// </summary>
     public async Task<IList<string>> GetCustomersByFlight(int flightId)
     {
-        var flight = await repository.Get(flightId);
+        Flight? flight = await repository.Get(flightId);
         if (flight == null || flight.Bookings == null)
+        {
             return new List<string>();
+        }
 
         return flight.Bookings
             .Where(booking => booking.Customer != null)
@@ -86,11 +92,11 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
     }
 
     /// <summary>
-    /// Возвращает топ-5 рейсов с наибольшим количеством бронирований.
+    ///     Возвращает топ-5 рейсов с наибольшим количеством бронирований.
     /// </summary>
     public async Task<IList<Tuple<string, int?>>> GetTop5FlightsByBookings()
     {
-        var flights = await repository.GetAll();
+        IList<Flight> flights = await repository.GetAll();
         return flights
             .Where(flight => flight.Bookings != null)
             .OrderByDescending(flight => flight.Bookings.Count)
@@ -100,11 +106,11 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
     }
 
     /// <summary>
-    /// Возвращает рейсы с максимальным количеством бронирований.
+    ///     Возвращает рейсы с максимальным количеством бронирований.
     /// </summary>
     public async Task<IList<string>> GetFlightsWithMaxBookings()
     {
-        var flights = await repository.GetAll();
+        IList<Flight> flights = await repository.GetAll();
         var maxBookings = flights
             .Where(flight => flight.Bookings != null)
             .Max(flight => flight.Bookings.Count);
@@ -118,18 +124,20 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
     }
 
     /// <summary>
-    /// Возвращает статистику бронирований для рейсов, вылетающих из указанного города.
+    ///     Возвращает статистику бронирований для рейсов, вылетающих из указанного города.
     /// </summary>
     public async Task<(int? Min, double? Average, int? Max)> GetBookingStatisticsByCity(string departureCity)
     {
-        var flights = await repository.GetAll();
+        IList<Flight> flights = await repository.GetAll();
         var bookingsCount = flights
             .Where(flight => flight.DepartureCity == departureCity && flight.Bookings != null)
-            .Select(flight => flight.Bookings.Count)
+            .Select(flight => flight.BookingCount)
             .ToList();
 
         if (bookingsCount.Count == 0)
+        {
             return (Min: 0, Average: 0, Max: 0);
+        }
 
         var minBookings = bookingsCount.Min();
         var maxBookings = bookingsCount.Max();
@@ -137,13 +145,13 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
 
         return (Min: minBookings, Average: averageBookings, Max: maxBookings);
     }
-    
+
     /// <summary>
-    /// Возвращает рейсы, вылетающие из указанного города в указанную дату.
+    ///     Возвращает рейсы, вылетающие из указанного города в указанную дату.
     /// </summary>
     public async Task<IList<string>> GetFlightsByCityAndDate(string departureCity, DateTime departureDate)
     {
-        var flights = await repository.GetAll();
+        IList<Flight> flights = await repository.GetAll();
         return flights
             .Where(flight => flight.DepartureCity == departureCity && flight.DepartureDate == departureDate.Date)
             .Select(flight =>

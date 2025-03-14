@@ -1,27 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using AirlineBooking.Application.Contracts;
+﻿using AirlineBooking.Application.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirlineBooking.Server.Controllers;
 
 /// <summary>
-/// Базовый контроллер для CRUD-операций над сущностями в системе бронирования авиабилетов.
-/// Может использоваться для работы с рейсами, клиентами и бронированиями.
+///     Базовый контроллер для CRUD-операций над сущностями в системе бронирования авиабилетов.
+///     Может использоваться для работы с рейсами, клиентами и бронированиями.
 /// </summary>
 /// <typeparam name="TDto">Dto для просмотра сущности (например, FlightDto, CustomerDto, BookingDto)</typeparam>
-/// <typeparam name="TCreateUpdateDto">Dto для создания или обновления сущности (например, FlightCreateUpdateDto, CustomerCreateUpdateDto, BookingCreateUpdateDto)</typeparam>
+/// <typeparam name="TCreateUpdateDto">
+///     Dto для создания или обновления сущности (например, FlightCreateUpdateDto,
+///     CustomerCreateUpdateDto, BookingCreateUpdateDto)
+/// </typeparam>
 /// <typeparam name="TKey">Тип первичного ключа сущности (например, int)</typeparam>
 /// <param name="crudService">Служба, имплементирующая дженерик интерфейс ICrudService</param>
 [Route("api/[controller]")]
 [ApiController]
-public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudService<TDto, TCreateUpdateDto, TKey> crudService) : ControllerBase
+public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
+    ICrudService<TDto, TCreateUpdateDto, TKey> crudService) : ControllerBase
     where TDto : class
     where TCreateUpdateDto : class
     where TKey : struct
 {
     /// <summary>
-    /// Добавление новой записи (например, нового рейса, клиента или бронирования)
+    ///     Добавление новой записи (например, нового рейса, клиента или бронирования)
     /// </summary>
     /// <param name="newDto">Новые данные</param>
     [HttpPost]
@@ -32,8 +34,8 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     {
         try
         {
-            var res = await crudService.Create(newDto);
-            return res != null? Ok(res) : StatusCode(400);
+            TDto? res = await crudService.Create(newDto);
+            return res != null ? Ok(res) : StatusCode(400);
         }
         catch (Exception ex)
         {
@@ -42,7 +44,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     }
 
     /// <summary>
-    /// Изменение имеющихся данных (например, обновление данных о рейсе, клиенте или бронировании)
+    ///     Изменение имеющихся данных (например, обновление данных о рейсе, клиенте или бронировании)
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <param name="newDto">Измененные данные</param>
@@ -54,8 +56,8 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     {
         try
         {
-            var res = await crudService.Update(id, newDto);
-            return res != null? Ok(res) : StatusCode(400);
+            TDto? res = await crudService.Update(id, newDto);
+            return res != null ? Ok(res) : StatusCode(400);
         }
         catch (Exception ex)
         {
@@ -64,7 +66,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     }
 
     /// <summary>
-    /// Удаление данных (например, удаление рейса, клиента или бронирования)
+    ///     Удаление данных (например, удаление рейса, клиента или бронирования)
     /// </summary>
     /// <param name="id">Идентификатор</param>
     [HttpDelete("{id}")]
@@ -85,7 +87,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     }
 
     /// <summary>
-    /// Получение списка всех данных (например, всех рейсов, клиентов или бронирований)
+    ///     Получение списка всех данных (например, всех рейсов, клиентов или бронирований)
     /// </summary>
     /// <returns>Список всех данных</returns>
     [HttpGet]
@@ -95,7 +97,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     {
         try
         {
-            var res = await crudService.GetList();
+            IList<TDto>? res = await crudService.GetList();
             return Ok(res);
         }
         catch (Exception ex)
@@ -105,7 +107,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     }
 
     /// <summary>
-    /// Получение данных по идентификатору (например, рейса, клиента или бронирования)
+    ///     Получение данных по идентификатору (например, рейса, клиента или бронирования)
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <returns>Данные</returns>
@@ -117,7 +119,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     {
         try
         {
-            var res = await crudService.GetById(id);
+            TDto? res = await crudService.GetById(id);
             return res != null ? Ok(res) : NoContent();
         }
         catch (Exception ex)

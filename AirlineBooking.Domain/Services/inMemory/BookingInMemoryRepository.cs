@@ -1,17 +1,17 @@
-﻿using AirlineBooking.Domain.Model;
-using AirlineBooking.Domain.Data;
+﻿using AirlineBooking.Domain.Data;
+using AirlineBooking.Domain.Model;
 
 namespace AirlineBooking.Domain.Services.InMemory;
 
 /// <summary>
-/// Реализация репозитория бронирований в памяти.
+///     Реализация репозитория бронирований в памяти.
 /// </summary>
 public class BookingInMemoryRepository : IRepository<Booking, int>
 {
-    private List<Booking> _bookings;
+    private readonly List<Booking> _bookings;
 
     /// <summary>
-    /// Инициализирует экземпляр класса и загружает данные из DataSeeder.
+    ///     Инициализирует экземпляр класса и загружает данные из DataSeeder.
     /// </summary>
     public BookingInMemoryRepository()
     {
@@ -19,7 +19,7 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
     }
 
     /// <summary>
-    /// Добавляет бронирование в коллекцию.
+    ///     Добавляет бронирование в коллекцию.
     /// </summary>
     /// <param name="entity">Бронирование для добавления.</param>
     /// <returns>True, если добавление успешно; иначе false.</returns>
@@ -33,11 +33,12 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
         {
             return null!;
         }
+
         return Task.FromResult(entity);
     }
 
     /// <summary>
-    /// Удаляет бронирование из коллекции по его ID.
+    ///     Удаляет бронирование из коллекции по его ID.
     /// </summary>
     /// <param name="key">ID бронирования для удаления.</param>
     /// <returns>True, если удаление успешно; иначе false.</returns>
@@ -45,34 +46,41 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
     {
         try
         {
-            var booking = await Get(key);
+            Booking? booking = await Get(key);
             if (booking != null)
+            {
                 _bookings.Remove(booking);
+            }
         }
         catch
         {
             return false;
         }
+
         return true;
     }
 
     /// <summary>
-    /// Возвращает бронирование по его ID.
+    ///     Возвращает бронирование по его ID.
     /// </summary>
     /// <param name="key">ID бронирования.</param>
     /// <returns>Бронирование или null, если бронирование не найдено.</returns>
-    public Task<Booking?> Get(int key) =>
-        Task.FromResult(_bookings.FirstOrDefault(item => item.Id == key));
+    public Task<Booking?> Get(int key)
+    {
+        return Task.FromResult(_bookings.FirstOrDefault(item => item.Id == key));
+    }
 
     /// <summary>
-    /// Возвращает все бронирования из коллекции.
+    ///     Возвращает все бронирования из коллекции.
     /// </summary>
     /// <returns>Список всех бронирований.</returns>
-    public Task<IList<Booking>> GetAll() =>
-        Task.FromResult((IList<Booking>)_bookings);
+    public Task<IList<Booking>> GetAll()
+    {
+        return Task.FromResult((IList<Booking>)_bookings);
+    }
 
     /// <summary>
-    /// Обновляет информацию о бронировании в коллекции.
+    ///     Обновляет информацию о бронировании в коллекции.
     /// </summary>
     /// <param name="entity">Обновленное бронирование.</param>
     /// <returns>True, если обновление успешно; иначе false.</returns>
@@ -87,6 +95,7 @@ public class BookingInMemoryRepository : IRepository<Booking, int>
         {
             return null!;
         }
+
         return entity;
     }
 }

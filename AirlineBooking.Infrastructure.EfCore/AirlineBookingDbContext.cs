@@ -3,16 +3,18 @@ using AirlineBooking.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirlineBooking.Infrastructure.EfCore;
+
 /// <summary>
-/// Контекст базы данных для управления сущностями системы бронирования авиабилетов.
+///     Контекст базы данных для управления сущностями системы бронирования авиабилетов.
 /// </summary>
 public class AirlineBookingDbContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Flight> Flights { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Booking> Bookings { get; set; }
+
     /// <summary>
-    /// Настройка модели базы данных.
+    ///     Настройка модели базы данных.
     /// </summary>
     /// <param name="modelBuilder">Инструмент для настройки модели.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
