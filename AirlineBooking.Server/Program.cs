@@ -1,19 +1,13 @@
-﻿using System;
-using System.IO;
-using AutoMapper;
-using AirlineBooking.Application;
-using AirlineBooking.Application.Contracts.Flight;
-using AirlineBooking.Application.Contracts.Customer;
-using AirlineBooking.Application.Contracts.Booking;
-using AirlineBooking.Application.Services;
-using AirlineBooking.Domain.Services;
-using AirlineBooking.Domain.Model;
-using AirlineBooking.Domain.Services.InMemory;
-using System.Reflection;
+﻿using AirlineBooking.Application;
 using AirlineBooking.Application.Contracts;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using AirlineBooking.Application.Contracts.Booking;
+using AirlineBooking.Application.Contracts.Customer;
+using AirlineBooking.Application.Contracts.Flight;
+using AirlineBooking.Application.Services;
+using AirlineBooking.Domain.Model;
+using AirlineBooking.Domain.Services;
+using AirlineBooking.Domain.Services.InMemory;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
