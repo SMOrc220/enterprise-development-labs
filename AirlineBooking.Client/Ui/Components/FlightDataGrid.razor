@@ -1,0 +1,155 @@
+﻿@inject IAirlineBookingApiWrapper AirlineBookingApi
+@inject NavigationManager NavManager
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Рейсы</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Создать
+                </Button>
+                @if (IsNested)
+                {
+                    <Button Color="Color.Secondary" Clicked="OpenLinkModal">
+                        Привязать
+                    </Button>
+                }
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="FlightDto"
+                  Data="Flights"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="FlightDto"
+                                Field="@nameof(FlightDto.Id)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteFlightAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                                @if (IsNested)
+                                {
+                                    <DropdownItem Clicked="() => UnlinkFlightAsync(context)">
+                                        Отвязать
+                                    </DropdownItem>
+                                }
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="FlightDto"
+                                Field="@nameof(FlightDto.FlightNumber)"
+                                Caption="Номер рейса">
+                </DataGridColumn>
+                <DataGridColumn TItem="FlightDto"
+                                Field="@nameof(FlightDto.DepartureCity)"
+                                Caption="Город отправления">
+                </DataGridColumn>
+                <DataGridColumn TItem="FlightDto"
+                                Field="@nameof(FlightDto.ArrivalCity)"
+                                Caption="Город прибытия">
+                </DataGridColumn>
+                <DataGridColumn TItem="FlightDto"
+                                Field="@nameof(FlightDto.DepartureDate)"
+                                Caption="Дата вылета">
+                    <DisplayTemplate>
+                        @if (context.DepartureDate.HasValue)
+                        {
+                            @context.DepartureDate.Value.ToString("dd.MM.yyyy HH:mm:ss")
+                        }
+                        else
+                        {
+                            <span>Не указана</span>
+                        }
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="FlightDto"
+                                Field="@nameof(FlightDto.BookingCount)"
+                                Caption="Число бронирований">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<FlightCreateModal @ref="FlightCreateModal" IsNested="IsNested" CustomerId="CustomerId"
+                   OnFlightAdded="@HandleFlightAdded"/>
+
+<FlightLinkModal @ref="FlightLinkModal" CustomerId="CustomerId" OnFlightAdded="@HandleFlightAdded"/>
+
+@code {
+    [Parameter] public bool IsNested { get; set; }
+    [Parameter] public int? CustomerId { get; set; }
+    [Parameter] public EventCallback OnDataChanged { get; set; }
+
+    private IList<FlightDto> Flights { get; set; } = [];
+    private FlightCreateModal FlightCreateModal { get; set; } = new();
+    private FlightLinkModal FlightLinkModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshFlightCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private void OpenEditPageAsync(FlightDto context)
+    {
+        NavManager.NavigateTo($"api/Flight/{context.Id}");
+    }
+
+    private async Task UnlinkFlightAsync(FlightDto context)
+    {
+        var bookings = (await AirlineBookingApi.GetAllBookings()).Where(b => b.FlightId == context.Id);
+        foreach (var booking in bookings)
+            await AirlineBookingApi.DeleteBooking(booking.Id);
+        await RefreshFlightCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task DeleteFlightAsync(FlightDto context)
+    {
+        await UnlinkFlightAsync(context);
+        await AirlineBookingApi.DeleteFlight(context.Id);
+        await RefreshFlightCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task HandleFlightAdded()
+    {
+        await RefreshFlightCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task OpenCreateModal()
+    {
+        await FlightCreateModal.Show();
+    }
+
+    private async Task OpenLinkModal()
+    {
+        await FlightLinkModal.Show();
+    }
+
+    private async Task RefreshFlightCollection()
+    {
+        Flights = IsNested
+            ? await AirlineBookingApi.GetFlightsByCustomer(CustomerId!.Value)
+            : await AirlineBookingApi.GetAllFlights();
+    }
+
+}

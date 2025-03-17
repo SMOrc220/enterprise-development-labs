@@ -1,0 +1,64 @@
+﻿@inject IAirlineBookingApiWrapper AirlineBookingApi
+
+<Modal @ref="FlightModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Привязать пассажира к рейсу</ModalTitle>
+                <CloseButton Clicked="CloseFlightModalAsync"/>
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Рейс</FieldLabel>
+                    <DropdownList TItem="FlightDto"
+                                  TValue="int"
+                                  Data="@FlightsToSelect"
+                                  TextField="@(item => item.FlightNumber)"
+                                  ValueField="@(item => item.Id)"
+                                  @bind-SelectedValue="@SelectedDropValue">
+                        Выбрать рейс
+                    </DropdownList>
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseFlightModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="LinkFlightAsync">Привязать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter] public int? CustomerId { get; set; }
+    [Parameter] public EventCallback OnFlightAdded { get; set; }
+
+    private Modal FlightModal { get; set; } = new();
+    private int SelectedDropValue { get; set; }
+    private IList<FlightDto> FlightsToSelect { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        FlightsToSelect = await AirlineBookingApi.GetAllFlights();
+        await base.OnInitializedAsync();
+    }
+
+    public async Task Show()
+    {
+        await FlightModal.Show();
+    }
+
+    private async Task LinkFlightAsync()
+    {
+        await AirlineBookingApi.CreateBooking(new BookingCreateUpdateDto { FlightId = SelectedDropValue, CustomerId = CustomerId.Value });
+        await CloseFlightModalAsync();
+        await OnFlightAdded.InvokeAsync();
+    }
+
+    private async Task CloseFlightModalAsync()
+    {
+        await FlightModal.Hide();
+    }
+
+}

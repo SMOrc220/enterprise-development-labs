@@ -1,0 +1,69 @@
+﻿@inject IAirlineBookingApiWrapper AirlineBookingApi
+
+<Modal @ref="FlightModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Привязать пассажира к рейсу</ModalTitle>
+                <CloseButton Clicked="CloseFlightModalAsync"/>
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Пассажир</FieldLabel>
+                    <DropdownList TItem="CustomerDto"
+                                  TValue="int"
+                                  Data="@CustomersToSelect"
+                                  TextField="@(item => CreateCaptionForCustomer(item))"
+                                  ValueField="@(item => item.Id)"
+                                  @bind-SelectedValue="@SelectedDropValue">
+                        Выбрать пассажира
+                    </DropdownList>
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseFlightModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="LinkFlightAsync">Привязать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter] public int? FlightId { get; set; }
+    [Parameter] public EventCallback OnCustomerAdded { get; set; }
+
+    private Modal FlightModal { get; set; } = new();
+    private int SelectedDropValue { get; set; }
+    private IList<CustomerDto> CustomersToSelect { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        CustomersToSelect = await AirlineBookingApi.GetAllCustomers();
+        await base.OnInitializedAsync();
+    }
+
+    public async Task Show()
+    {
+        await FlightModal.Show();
+    }
+
+    private async Task LinkFlightAsync()
+    {
+        await AirlineBookingApi.CreateBooking(new BookingCreateUpdateDto { FlightId = FlightId.Value, CustomerId = SelectedDropValue });
+        await CloseFlightModalAsync();
+        await OnCustomerAdded.InvokeAsync();
+    }
+
+    private async Task CloseFlightModalAsync()
+    {
+        await FlightModal.Hide();
+    }
+
+    private string CreateCaptionForCustomer(CustomerDto customer)
+    {
+        return $"{customer.FullName} (ID: {customer.Id})";
+    }
+
+}

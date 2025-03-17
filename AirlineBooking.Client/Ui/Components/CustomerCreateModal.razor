@@ -1,0 +1,58 @@
+﻿@inject IAirlineBookingApiWrapper AirlineBookingApi
+
+<Modal @ref="CustomerModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новый клиент</ModalTitle>
+                <CloseButton Clicked="CloseCustomerModalAsync"/>
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>ФИО клиента</FieldLabel>
+                    <TextEdit @bind-Text="@NewCustomer.FullName"/>
+                </Field>
+                <Field>
+                    <FieldLabel>Email</FieldLabel>
+                    <TextEdit @bind-Text="@NewCustomer.Passport"/>
+                </Field>
+                <Field>
+                    <FieldLabel>Телефон</FieldLabel>
+                    <DateEdit @bind-Date="@NewCustomer.BirthDate"/>
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseCustomerModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateCustomerAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter] public EventCallback OnCustomerAdded { get; set; }
+
+    private Modal CustomerModal { get; set; } = new();
+    private CustomerCreateUpdateDto NewCustomer { get; set; } = new();
+
+    public async Task Show()
+    {
+        await CustomerModal.Show();
+    }
+
+    private async Task CloseCustomerModalAsync()
+    {
+        await CustomerModal.Hide();
+        NewCustomer = new CustomerCreateUpdateDto(); // Очищаем форму после закрытия модального окна
+    }
+
+    private async Task CreateCustomerAsync()
+    {
+        await AirlineBookingApi.CreateCustomer(NewCustomer);
+        await CloseCustomerModalAsync();
+        await OnCustomerAdded.InvokeAsync();
+    }
+
+}

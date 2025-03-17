@@ -1,0 +1,114 @@
+﻿@inject IAirlineBookingApiWrapper AirlineBookingApi
+@inject NavigationManager NavManager
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Клиенты</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Создать
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+
+    <CardBody>
+        <DataGrid TItem="CustomerDto"
+                  Data="Customers"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="CustomerDto"
+                                Field="@nameof(CustomerDto.Id)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteCustomerAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="CustomerDto"
+                                Field="@nameof(CustomerDto.FullName)"
+                                Caption="ФИО клиента">
+                </DataGridColumn>
+                <DataGridColumn TItem="CustomerDto"
+                                Field="@nameof(CustomerDto.Passport)"
+                                Caption="Пасморт">
+                </DataGridColumn>
+                <DataGridColumn TItem="CustomerDto"
+                                Field="@nameof(CustomerDto.BirthDate)"
+                                Caption="Дата рождения">
+                    <DisplayTemplate>
+                        @if (context.BirthDate.HasValue)
+                        {
+                            @context.BirthDate.Value.ToString("dd.MM.yyyy")
+                        }
+                        else
+                        {
+                            <span>Не указана</span>
+                        }
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="CustomerDto"
+                                Field="@nameof(CustomerDto.BookingCount)"
+                                Caption="Количество бронирований">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<CustomerCreateModal @ref="CustomerCreateModal" OnCustomerAdded="@HandleCustomerAdded"/>
+
+@code {
+    [Parameter] public bool IsNested { get; set; }
+    private IList<CustomerDto> Customers { get; set; } = [];
+    private CustomerCreateModal CustomerCreateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshCustomerCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private void OpenEditPageAsync(CustomerDto context)
+    {
+        NavManager.NavigateTo($"api/Customer/{context.Id}");
+    }
+
+    private async Task DeleteCustomerAsync(CustomerDto context)
+    {
+        await AirlineBookingApi.DeleteCustomer(context.Id);
+        await RefreshCustomerCollection();
+    }
+
+    private async Task HandleCustomerAdded()
+    {
+        await RefreshCustomerCollection();
+    }
+
+    private async Task OpenCreateModal()
+    {
+        await CustomerCreateModal.Show();
+    }
+
+    private async Task RefreshCustomerCollection()
+    {
+        Customers = await AirlineBookingApi.GetAllCustomers();
+    }
+
+}

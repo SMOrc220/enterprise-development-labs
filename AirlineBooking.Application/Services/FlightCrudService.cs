@@ -85,7 +85,7 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
         return flight.Bookings
             .Where(booking => booking.Customer != null)
             .Select(booking => booking.Customer)
-            .OrderBy(customer => customer!.FullName) // Используем оператор ! для подавления предупреждений
+            .OrderBy(customer => customer.FullName)
             .Select(customer =>
                 $"Пассажир: {customer.FullName}, Паспорт: {customer.Passport}, Дата рождения: {customer.BirthDate}")
             .ToList();
@@ -99,9 +99,9 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
         IList<Flight> flights = await repository.GetAll();
         return flights
             .Where(flight => flight.Bookings != null)
-            .OrderByDescending(flight => flight.Bookings.Count)
+            .OrderByDescending(flight => flight.BookingCount)
             .Take(5)
-            .Select(flight => new Tuple<string, int?>(flight.FlightNumber, flight.Bookings.Count))
+            .Select(flight => new Tuple<string, int?>(flight.FlightNumber, flight.BookingCount))
             .ToList();
     }
 
@@ -113,13 +113,13 @@ public class FlightCrudService(IFlightRepository repository, IMapper mapper)
         IList<Flight> flights = await repository.GetAll();
         var maxBookings = flights
             .Where(flight => flight.Bookings != null)
-            .Max(flight => flight.Bookings.Count);
+            .Max(flight => flight.BookingCount);
 
         return flights
-            .Where(flight => flight.Bookings != null && flight.Bookings.Count == maxBookings)
+            .Where(flight => flight.Bookings != null && flight.BookingCount == maxBookings)
             .Select(flight =>
                 $"Рейс: {flight.FlightNumber}, Откуда: {flight.DepartureCity}, Куда: {flight.ArrivalCity}, " +
-                $"Количество бронирований: {flight.Bookings.Count}")
+                $"Количество бронирований: {flight.BookingCount}")
             .ToList();
     }
 

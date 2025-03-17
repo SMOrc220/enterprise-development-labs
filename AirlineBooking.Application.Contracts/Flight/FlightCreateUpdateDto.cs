@@ -10,10 +10,10 @@
 /// <param name="DepartureDate">Дата отправления</param>
 /// <param name="ArrivalDate">Дата прибытия</param>
 public record FlightCreateUpdateDto(
-    string FlightNumber, // Номер рейса
-    string DepartureCity, // Город вылета
-    string ArrivalCity, // Город прилета
-    string AircraftType, // Тип самолета (из справочника)
-    DateTime DepartureDate, // Дата отправления
-    DateTime ArrivalDate // Дата прибытия
+    string FlightNumber,
+    string DepartureCity,
+    string ArrivalCity,
+    string AircraftType,
+    DateTime DepartureDate,
+    DateTime ArrivalDate
 );

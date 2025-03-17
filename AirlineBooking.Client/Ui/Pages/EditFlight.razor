@@ -1,0 +1,94 @@
+﻿@page "/api/Flight/{Id}"
+
+@inject IAirlineBookingApiWrapper AirlineBookingApi
+@inject IJSRuntime JsRuntime
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Изменить рейс</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="UpdateFlightAsync">
+                    Сохранить
+                </Button>
+                <Button Color="Color.Danger" Clicked="DeleteFlightAsync">
+                    Удалить
+                </Button>
+                <Button Color="Color.Secondary" onclick="history.back();">
+                    Закрыть
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+
+    <CardBody>
+        <Field>
+            <FieldLabel>Номер рейса</FieldLabel>
+            <TextEdit @bind-Text="@UpdatedFlight.FlightNumber"/>
+        </Field>
+        <Field>
+            <FieldLabel>Город отправления</FieldLabel>
+            <TextEdit @bind-Text="@UpdatedFlight.DepartureCity"/>
+        </Field>
+        <Field>
+            <FieldLabel>Город прибытия</FieldLabel>
+            <TextEdit @bind-Text="@UpdatedFlight.ArrivalCity"/>
+        </Field>
+        <Field>
+            <FieldLabel>Дата вылета</FieldLabel>
+            <DateEdit @bind-Date="@UpdatedFlight.DepartureDate"/>
+        </Field>
+        <Field>
+            <FieldLabel>Дата прибытия</FieldLabel>
+            <DateEdit @bind-Date="@UpdatedFlight.ArrivalDate"/>
+        </Field>
+        <Field>
+            <FieldLabel>Тип самолёта</FieldLabel>
+            <TextEdit @bind-Text="@UpdatedFlight.AircraftType"/>
+        </Field>
+    </CardBody>
+</Card>
+
+<CustomerDataGrid IsNested="true" FlightId="@FlightId"/>
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+
+    private int FlightId { get; set; }
+    private FlightDto UpdatedFlight { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!int.TryParse(Id, out var id))
+            throw new Exception("Некорректный идентификатор рейса");
+        FlightId = id;
+        UpdatedFlight = await AirlineBookingApi.GetFlight(FlightId);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task DeleteFlightAsync()
+    {
+        await AirlineBookingApi.DeleteFlight(FlightId);
+        var bookings = (await AirlineBookingApi.GetAllBookings()).Where(b => b.FlightId == FlightId);
+        foreach (var booking in bookings)
+            await AirlineBookingApi.DeleteBooking(booking.Id);
+        await JsRuntime.InvokeVoidAsync("history.back()");
+    }
+
+    private async Task UpdateFlightAsync()
+    {
+        var EditedFlight = new FlightCreateUpdateDto
+        {
+            FlightNumber = UpdatedFlight.FlightNumber,
+            DepartureCity = UpdatedFlight.DepartureCity,
+            ArrivalCity = UpdatedFlight.ArrivalCity,
+            AircraftType = UpdatedFlight.AircraftType,
+            DepartureDate = UpdatedFlight.DepartureDate,
+            ArrivalDate = UpdatedFlight.ArrivalDate
+        };
+        UpdatedFlight = await AirlineBookingApi.UpdateFlight(FlightId, EditedFlight);
+    }
+
+}

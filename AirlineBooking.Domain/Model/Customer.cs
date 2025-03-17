@@ -18,7 +18,7 @@ public class Customer
     /// <summary>
     ///     Полное имя клиента.
     /// </summary>
-    public required string FullName { get; set; }
+    public string? FullName { get; set; }
 
     /// <summary>
     ///     Дата рождения клиента.

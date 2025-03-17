@@ -1,0 +1,81 @@
+﻿@inject IAirlineBookingApiWrapper AirlineBookingApi
+
+<Modal @ref="FlightModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новый рейс</ModalTitle>
+                <CloseButton Clicked="CloseFlightModalAsync"/>
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Номер рейса</FieldLabel>
+                    <TextEdit @bind-Text="@NewFlight.FlightNumber"/>
+                </Field>
+                <Field>
+                    <FieldLabel>Город отправления</FieldLabel>
+                    <TextEdit @bind-Text="@NewFlight.DepartureCity"/>
+                </Field>
+                <Field>
+                    <FieldLabel>Город прибытия</FieldLabel>
+                    <TextEdit @bind-Text="@NewFlight.ArrivalCity"/>
+                </Field>
+                <Field>
+                    <FieldLabel>Дата вылета</FieldLabel>
+                    <DateEdit @bind-Date="@NewFlight.DepartureDate"/>
+                </Field>
+                <Field>
+                    <FieldLabel>Дата прибытия</FieldLabel>
+                    <DateEdit @bind-Date="@NewFlight.ArrivalDate"/>
+                </Field>
+                <Field>
+                    <FieldLabel>Тип самолёта</FieldLabel>
+                    <TextEdit @bind-Text="@NewFlight.AircraftType"/>
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseFlightModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateFlightAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter] public bool IsNested { get; set; }
+    [Parameter] public int? CustomerId { get; set; }
+    [Parameter] public EventCallback OnFlightAdded { get; set; }
+
+    private CustomerDto CurrentCustomer { get; set; } = new();
+    private Modal FlightModal { get; set; } = new();
+    private FlightCreateUpdateDto NewFlight { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsNested)
+            CurrentCustomer = await AirlineBookingApi.GetCustomer(CustomerId!.Value);
+        await base.OnInitializedAsync();
+    }
+
+    public async Task Show()
+    {
+        await FlightModal.Show();
+    }
+
+    private async Task CloseFlightModalAsync()
+    {
+        await FlightModal.Hide();
+    }
+
+    private async Task CreateFlightAsync()
+    {
+        var result = await AirlineBookingApi.CreateFlight(NewFlight);
+        if (IsNested)
+            await AirlineBookingApi.CreateBooking(new BookingCreateUpdateDto { CustomerId = CustomerId!.Value, FlightId = result.Id });
+        await FlightModal.Hide();
+        await OnFlightAdded.InvokeAsync();
+    }
+
+}

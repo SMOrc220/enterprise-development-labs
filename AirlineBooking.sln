@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirlineBooking.Server", "Ai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirlineBooking.Infrastructure.EfCore", "AirlineBooking.Infrastructure.EfCore\AirlineBooking.Infrastructure.EfCore.csproj", "{68093F0F-AC19-47A6-8FEE-88CD1F4F24AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirlineBooking.Client", "AirlineBooking.Client\AirlineBooking.Client.csproj", "{022E10ED-9098-47DC-9518-05AFAB2745E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{68093F0F-AC19-47A6-8FEE-88CD1F4F24AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68093F0F-AC19-47A6-8FEE-88CD1F4F24AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68093F0F-AC19-47A6-8FEE-88CD1F4F24AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{022E10ED-9098-47DC-9518-05AFAB2745E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{022E10ED-9098-47DC-9518-05AFAB2745E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{022E10ED-9098-47DC-9518-05AFAB2745E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{022E10ED-9098-47DC-9518-05AFAB2745E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{529C5809-7BDB-49F9-AF8A-882F8E88D7C8} = {9B10E80F-DA26-4A1C-9B5F-3CBA3AE8A4A0}
@@ -54,5 +60,6 @@ Global
 		{26F9C6D4-7CB1-49BD-B923-8AAC5D08491E} = {9B10E80F-DA26-4A1C-9B5F-3CBA3AE8A4A0}
 		{365F84EA-8D3E-4A10-9CDF-961592AA4180} = {9B10E80F-DA26-4A1C-9B5F-3CBA3AE8A4A0}
 		{68093F0F-AC19-47A6-8FEE-88CD1F4F24AD} = {9B10E80F-DA26-4A1C-9B5F-3CBA3AE8A4A0}
+		{022E10ED-9098-47DC-9518-05AFAB2745E8} = {9B10E80F-DA26-4A1C-9B5F-3CBA3AE8A4A0}
 	EndGlobalSection
 EndGlobal

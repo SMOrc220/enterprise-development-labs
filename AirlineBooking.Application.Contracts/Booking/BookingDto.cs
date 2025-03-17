@@ -6,8 +6,10 @@
 /// <param name="Id">Идентификатор</param>
 /// <param name="CustomerId">Идентификатор клиента</param>
 /// <param name="FlightId">Идентификатор рейса</param>
+/// <param name="TicketNumber">Номер билета</param>
 public record BookingDto(
-    int Id, // Идентификатор бронирования
-    int CustomerId, // Идентификатор клиента
-    int FlightId // Идентификатор рейса
+    int Id,
+    int CustomerId,
+    int FlightId,
+    string TicketNumber
 );

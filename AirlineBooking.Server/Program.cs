@@ -1,4 +1,5 @@
-﻿using AirlineBooking.Application;
+﻿using System.Reflection;
+using AirlineBooking.Application;
 using AirlineBooking.Application.Contracts;
 using AirlineBooking.Application.Contracts.Booking;
 using AirlineBooking.Application.Contracts.Customer;
@@ -10,13 +11,25 @@ using AirlineBooking.Infrastructure.EfCore;
 using AirlineBooking.Infrastructure.EfCore.Services;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "AirlineBooking API",
+        Version = "v1",
+        Description = "API для системы бронирования авиабилетов"
+    });
 
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath, true);
+});
 var mapperConfig = new MapperConfiguration(config => config.AddProfile(new AutoMapperProfile()));
 IMapper? mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
@@ -37,9 +50,9 @@ builder.Services.AddDbContextFactory<AirlineBookingDbContext>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("default", policy =>
+    options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("http://localhost:5244")
+        policy.WithOrigins("http://localhost:5245")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
@@ -54,7 +67,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-app.UseCors("default");
+app.UseCors("AllowSpecificOrigin");
 app.MapControllers();
 
 app.Run();

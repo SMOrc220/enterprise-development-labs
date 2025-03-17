@@ -1,0 +1,100 @@
+﻿@inject IAirlineBookingApiWrapper AirlineBookingApi
+
+@page "/"
+@using System.Text
+
+<Card>
+    <CardBody>
+        <p>Использованная библиотека компонентов - <a href="https://blazorise.com/docs">Blazorise</a></p>
+        <p>Использованный CSS фреймворк - <a href="https://bootstrap5demo.blazorise.com/">Bootstrap 5</a></p>
+        <p>Аналогичные библиотеки компонентов:</p>
+        <ul>
+            <li><a href="https://mudblazor.com/">MudBlazor</a></li>
+            <li><a href="https://blazor.radzen.com/">Radzen</a></li>
+            <li><a href="https://antblazor.com/">Ant Design Blazor</a></li>
+            <li><a href="https://fluentui-blazor.net">Fluent Ui Blazor</a></li>
+        </ul>
+    </CardBody>
+</Card>
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Пять наиболее популярных рейсов по количеству бронирований</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="GetTopFlights">
+                    Получить
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <MemoEdit Text="@_topFlights" AutoSize ReadOnly/>
+    </CardBody>
+</Card>
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Последние пять рейсов пассажира</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Select TValue="int" SelectedValue="@_selectedCustomerId"
+                        SelectedValueChanged="@(value => _selectedCustomerId = value)">
+                    @foreach (var customer in _availableCustomers)
+                    {
+                        <SelectItem Value="@customer.Id">@($"{customer.FullName}")</SelectItem>
+                    }
+                </Select>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="GetLastFlights">
+                    Получить
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <MemoEdit Text="@_lastFlights" AutoSize ReadOnly/>
+    </CardBody>
+</Card>
+
+@code {
+    private List<CustomerDto> _availableCustomers = new();
+    private string _topFlights = "Запросите данные";
+    private string _lastFlights = "Запросите данные";
+    private int _selectedCustomerId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _availableCustomers = [.. await AirlineBookingApi.GetAllCustomers()];
+    }
+
+    private async Task GetTopFlights()
+    {
+        var flights = await AirlineBookingApi.GetTop5FlightsByBookings();
+        var text = TuplesToText(flights);
+        _topFlights = text;
+    }
+
+    private async Task GetLastFlights()
+    {
+        var flights = await AirlineBookingApi.GetTop5FlightsByBookings();
+        var text = TuplesToText(flights);
+        _lastFlights = text;
+    }
+
+    private string TuplesToText(IList<(string, int)> tuples)
+    {
+        var builder = new StringBuilder();
+        if (!tuples.Any())
+            return "Нет данных";
+        foreach (var t in tuples)
+            builder.AppendLine($"{t.Item1} : {t.Item2}");
+        return builder.ToString();
+    }
+
+}

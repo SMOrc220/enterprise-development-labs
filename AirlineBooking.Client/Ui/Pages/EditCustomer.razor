@@ -1,0 +1,74 @@
+﻿@page "/api/Customer/{Id}"
+
+@inject IAirlineBookingApiWrapper AirlineBookingApi
+@inject IJSRuntime JsRuntime
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Изменить клиента</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="UpdateCustomerAsync">
+                    Сохранить
+                </Button>
+                <Button Color="Color.Danger" Clicked="DeleteCustomerAsync">
+                    Удалить
+                </Button>
+                <Button Color="Color.Secondary" onclick="history.back();">
+                    Закрыть
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+
+    <CardBody>
+        <Field>
+            <FieldLabel>Паспортные данные</FieldLabel>
+            <TextEdit @bind-Text="@UpdatedCustomer.Passport"/>
+        </Field>
+        <Field>
+            <FieldLabel>ФИО клиента</FieldLabel>
+            <TextEdit @bind-Text="@UpdatedCustomer.FullName"/>
+        </Field>
+        <Field>
+            <FieldLabel>Дата рождения</FieldLabel>
+            <DateEdit @bind-Date="@UpdatedCustomer.BirthDate"/>
+        </Field>
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+
+    private int CustomerId { get; set; }
+    private CustomerDto UpdatedCustomer { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!int.TryParse(Id, out var id))
+            throw new Exception("Некорректный идентификатор клиента");
+        CustomerId = id;
+        UpdatedCustomer = await AirlineBookingApi.GetCustomer(CustomerId);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task DeleteCustomerAsync()
+    {
+        await AirlineBookingApi.DeleteCustomer(CustomerId);
+        await JsRuntime.InvokeVoidAsync("history.back()");
+    }
+
+    private async Task UpdateCustomerAsync()
+    {
+        var EditedCustomer = new CustomerCreateUpdateDto
+        {
+            Passport = UpdatedCustomer.Passport,
+            FullName = UpdatedCustomer.FullName,
+            BirthDate = UpdatedCustomer.BirthDate
+        };
+        UpdatedCustomer = await AirlineBookingApi.UpdateCustomer(CustomerId, EditedCustomer);
+    }
+
+}

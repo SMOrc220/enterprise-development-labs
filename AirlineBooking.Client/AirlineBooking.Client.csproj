@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Remove="Api\swagger.json"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <OpenApiReference Include="Api\swagger.json" CodeGenerator="NSwagCSharp" Namespace="AirlineBooking.Client" ClassName="AirlineBookingClient"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="/wwwroot/appsetings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Blazorise" Version="1.6.2"/>
+        <PackageReference Include="Blazorise.Bootstrap5" Version="1.6.2"/>
+        <PackageReference Include="Blazorise.Components" Version="1.6.2"/>
+        <PackageReference Include="Blazorise.DataGrid" Version="1.6.2"/>
+        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.6.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="NSwag.ApiDescription.Client" Version="13.18.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+</Project>
