@@ -52,16 +52,6 @@
                 <DataGridColumn TItem="CustomerDto"
                                 Field="@nameof(CustomerDto.BirthDate)"
                                 Caption="Дата рождения">
-                    <DisplayTemplate>
-                        @if (context.BirthDate.HasValue)
-                        {
-                            @context.BirthDate.Value.ToString("dd.MM.yyyy")
-                        }
-                        else
-                        {
-                            <span>Не указана</span>
-                        }
-                    </DisplayTemplate>
                 </DataGridColumn>
                 <DataGridColumn TItem="CustomerDto"
                                 Field="@nameof(CustomerDto.BookingCount)"
